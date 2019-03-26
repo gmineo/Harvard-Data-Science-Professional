@@ -12,7 +12,7 @@ This course cover:
 
 ## Content
 
-1) [R Basics](./01%20-%20R%020Basics)
+1) [R Basics](https://github.com/gmineo/Harvard-Data-Science-Professional/tree/master/01%20-%20PH125.1x%20-%20R%20Basics)
 2) [Data Types](./02%20-%20Data%020Types)
 3) [Vectors](./03%20-%20Vectors)
 4) [Sorting](./04%20-%20Sorting)

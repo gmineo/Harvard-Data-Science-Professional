@@ -2,8 +2,8 @@
 title: "Assessment 02 - Quantiles, Percentiles and Boxplots"
 author: "Gabriele Mineo - Harvard Data Science Professional"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -70,7 +70,7 @@ print(df)
 ## **Interpretating Boxplots - 1**
 Study the boxplots summarizing the distributions of populations sizes by country.
 
-![](Users/Admin/Downloads/Harvard-Data-Science-Professional/prova/02 - PH125.2x - Visualization/02 - Quantiles, Percentiles and Boxplots/img1.png)
+![](/Users/Admin/Downloads/Harvard-Data-Science-Professional/prova/02 - PH125.2x - Visualization/02 - Quantiles, Percentiles and Boxplots/img1.png)
 
 Which continent has the country with the largest population size?
 

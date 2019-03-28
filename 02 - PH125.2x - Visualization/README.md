@@ -13,8 +13,8 @@ This course cover:
 
 ## Content
 
-1) [R Basics](./01%20-%20R%020Basics)
-2) [Data Types](./02%20-%20Data%020Types)
+1) [R Basics](./01%20-%20R%20Basics)
+2) [Data Types](./02%20-%20Data%20Types)
 3) [Vectors](./03%20-%20Vectors)
 4) [Sorting](./04%20-%20Sorting)
 5) [Vector Arithmetics](./05%20-%20Vector%020Arithmetics)

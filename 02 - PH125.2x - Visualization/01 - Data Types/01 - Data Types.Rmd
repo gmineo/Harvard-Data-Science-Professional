@@ -1,9 +1,9 @@
 ---
-title: "Assessment 01 - Data Types"
+title: "Assessment 02 - Quantiles, Percentiles and Boxplots"
 author: "Gabriele Mineo - Harvard Data Science Professional"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,118 +12,143 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br/>
 
-## **Variable names**
-The type of data we are working with will often influence the data visualization technique we use. We will be working with two types of variables: categorical and numeric. Each can be divided into two other groups: categorical can be ordinal or not, whereas numerical variables can be discrete or continuous.
+## **Vector lengths**
+When analyzing data it's often important to know the number of measurements you have for each category.
 
-We will review data types using some of the examples provided in the ```dslabs``` package. For example, the ```heights``` dataset.
+**Instructions**
+
+- Define a variable ```male``` that contains the male heights.
+- Define a variable ```female``` that contains the female heights.
+- Report the length of each variable.
 
 ```{r, include=TRUE}
 library(dslabs)
 data(heights)
-```
-
-**Instructions**
-
-Let's start by reviewing how to extract the variable ```names``` from a dataset using the names function. What are the two variable names used in the ```heights``` dataset?
-
-```
-library(dslabs)
-data(heights)
-names(heights)
+male <- heights$height[heights$sex=="Male"]
+female <- heights$height[heights$sex=="Female"]
+length(male)
+length(female)
 ```
 
 <br/>
 
-## **Variable type**
-We saw that sex is the first variable. We know what values are represented by this variable and can confirm this by looking at the first few entires:
+## **Percentiles**
+Suppose we can't make a plot and want to compare the distributions side by side. If the number of data points is large, listing all the numbers is inpractical. A more practical approach is to look at the percentiles. We can obtain percentiles using the ```quantile``` function like this
 
 ```
 library(dslabs)
 data(heights)
-head(heights)
+quantile(heights$height, seq(.01, 0.99, 0.01))
 ```
 
-What data type is the sex variable?
+**Instructions**
+
+- Create two five row vectors showing the 10th, 30th, 50th, 70th, and 90th percentiles for the heights of each sex called these vectors ```female_percentiles``` and ```male_percentiles```.
+- Then create a data frame called ```df``` with these two vectors as columns. The column names should be ```female``` and ```male``` and should appear in that order. As an example consider that if you want a data frame to have column names ```names``` and ```grades```, in that order, you do it like this:
+
+```
+df <- data.frame(names = c("Jose", "Mary"), grades = c("B", "A"))
+```
+- Take a look at the ```df``` by printing it. This will provide some information on how male and female heights differ.
+
+```{r, include=TRUE}
+library(dslabs)
+data(heights)
+male <- heights$height[heights$sex=="Male"]
+female <- heights$height[heights$sex=="Female"]
+
+male_percentiles <- quantile(male, c(.1,.3,.5,.7,.9))
+female_percentiles <- quantile(female, c(.1,.3,.5,.7,.9))
+
+df <- data.frame(female = female_percentiles, male = male_percentiles)
+
+print(df)
+```
+
+<br/>
+
+## **Interpretating Boxplots - 1**
+Study the boxplots summarizing the distributions of populations sizes by country.
+
+![](Users/Admin/Downloads/Harvard-Data-Science-Professional/prova/02 - PH125.2x - Visualization/02 - Quantiles, Percentiles and Boxplots/img1.png)
+
+Which continent has the country with the largest population size?
 
 **Instructions**
 
 Possible Answers
 
-- Continuous
-- Categorical [X]
-- Ordinal
-- None of the above
+- Africa
+- Americas
+- Asia [X]
+- Europe
+- Oceania
 
 <br/>
 
-## **Numerical values**
-Keep in mind that discrete numeric data can be considered ordinal. Although this is technically true, we usually reserve the term ordinal data for variables belonging to a small number of different groups, with each group having many members.
+## **NInterpretating Boxplots - 2**
+Study the boxplots summarizing the distributions of populations sizes by country.
 
-The ```height``` variable could be ordinal if, for example, we report a small number of values such as short, medium, and tall. Let's explore how many unique values are used by the heights varialbe. For this we can use the unique fuction:
+![](img1.png)
 
-```
-x <- c(3, 3, 3, 3, 4, 4, 2)
-unique(x)
-```
-
-**Instructions**
-
-Use the ```unique``` and ```length``` functions to determine how many unique heights were reported.
-
-```{r, include=TRUE}
-library(dslabs)
-data(heights)
-x <- heights$height
-length(unique(x))
-```
-
-<br/>
-
-## **Tables**
-One of the useful outputs of data visualization is that we can learn about the distribution of variables. For categorical data we can construct this distribution by simply computing the frequency of each unique value. This can be done with the function ```table```. Here is an example:
-
-```
-x <- c(3, 3, 3, 3, 4, 4, 2)
-table(x)
-```
-
-**Instructions**
-
-Use the ```table``` function to compute the frequencies of each unique height value. Because we are using the resulting frequency table in a later exercise we want you to save the results into an object and call it ```tab```.
-
-```{r, include=TRUE}
-library(dslabs)
-data(heights)
-x <- heights$height
-tab <- table(x)
-```
-
-<br/>
-
-## **Indicator variables**
-To see why treating the reported heights as an ordinal value is not useful in practice we note how many values are reported only once.
-
-**Instructions**
-
-In the previous exercise we computed the variable ```tab``` which reports the number of times each unique value appears. For values reported only once ```tab``` will be 1. Use logicals and the function ```sum``` to count the number of times this happens.
-
-```{r, include=TRUE}
-library(dslabs)
-data(heights)
-tab <- table(heights$height)
-sum(tab == 1)
-```
-
-<br/>
-
-## **Data types - heights**
-Since there are a finite number of reported heights and technically the height can be considered ordinal, which of the following is true:
+Which continent has median country with the largest population?
 
 **Instructions**
 
 Possible Answers
 
-- It is more effective to consider heights to be numerical given the number of unique values we observe and the fact that if we keep collecting data even more will be observed. [X]
-- It is actually preferable to consider heights ordinal since on a computer there are only a finite number of possibilities.
-- This is actually a categorical variable: tall, medium or short.
-- This is a numerical variable because numbers are used to represent it.
+- Africa [X]
+- Americas
+- Asia
+- Europe
+- Oceania
+
+<br/>
+
+## **Interpreting Boxplots - 3**
+Again, look at the boxplots summarizing the distributions of populations sizes by country. To the nearest million, what is the ```median``` population size for Africa?
+
+![](img1.png)
+
+**Instructions**
+
+Possible Answers
+
+- 100 million
+- 25 million
+- 10 million [X]
+- 5 million
+- 1 million
+
+<br/>
+
+## **Low quantiles**
+Examine the following boxplots and report approximately what proportion of countries in Europe have populations below 14 million:
+
+![](img1.png)
+
+Instructions
+
+Possible Answers
+
+- 0.75 [X]
+- 0.50
+- 0.25
+- 0.01
+
+<br/>
+
+## **Interquantile Range (IQR)**
+Based on the boxplot, if we use a log transformation, which continent shown below has the largest interquartile range?
+
+![](img1.png)
+
+**Instructions**
+
+Possible Answers
+
+- Africa
+- Americas [X]
+- Asia
+- Europe
+- Oceania

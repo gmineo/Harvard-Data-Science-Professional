@@ -2,8 +2,8 @@
 title: "Assessment 11 - Data Visualization Principles Part 3"
 author: "Gabriele Mineo - Harvard Data Science Professional"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}

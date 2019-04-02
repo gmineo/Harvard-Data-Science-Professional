@@ -1,0 +1,999 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Assessment 03 - Confidence Intervals},
+            pdfauthor={Gabriele Mineo - Harvard Data Science Professional},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Assessment 03 - Confidence Intervals}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Gabriele Mineo - Harvard Data Science Professional}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\subsection{\texorpdfstring{\textbf{Confidence interval for
+p}}{Confidence interval for p}}\label{confidence-interval-for-p}
+
+For the following exercises, we will use actual poll data from the 2016
+election. The exercises will contain pre-loaded data from the dslabs
+package.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(dslabs)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{data}\NormalTok{(polls_us_election_}\DecValTok{2016}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+We will use all the national polls that ended within a few weeks before
+the election.
+
+Assume there are only two candidates and construct a 95\% confidence
+interval for the election night proportion p.
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{filter} to subset the data set for the poll data you want.
+  Include polls that ended on or after October 31, 2016
+  (\texttt{enddate}). Only include polls that took place in the United
+  States. Call this filtered object \texttt{polls}.
+\item
+  Use \texttt{nrow} to make sure you created a filtered object
+  \texttt{polls} that contains the correct number of rows.
+\item
+  Extract the sample size \texttt{N}from the first poll in your subset
+  object \texttt{polls}.
+\item
+  Convert the percentage of Clinton voters (\texttt{rawpoll\_clinton})
+  from the first poll in \texttt{polls} to a proportion,
+  \texttt{X\_hat}. Print this value to the console.
+\item
+  Find the standard error of \texttt{X\_hat} given \texttt{N}. Print
+  this result to the console.
+\item
+  Calculate the 95\% confidence interval of this estimate using the
+  \texttt{qnorm} function.
+\item
+  Save the lower and upper confidence intervals as an object called
+  \texttt{ci}. Save the lower confidence interval first.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Load the data}
+
+\KeywordTok{data}\NormalTok{(polls_us_election_}\DecValTok{2016}\NormalTok{)}
+
+\CommentTok{# Generate an object `polls` that contains data filtered for polls that ended on or after October 31, 2016 in the United States}
+\NormalTok{polls <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(polls_us_election_}\DecValTok{2016}\NormalTok{, enddate }\OperatorTok{>=}\StringTok{ "2016-10-31"} \OperatorTok{&}\StringTok{ }\NormalTok{state }\OperatorTok{==}\StringTok{ "U.S."}\NormalTok{)}
+
+\CommentTok{# How many rows does `polls` contain? Print this value to the console.}
+\KeywordTok{nrow}\NormalTok{(polls)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 70
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Assign the sample size of the first poll in `polls` to a variable called `N`. Print this value to the console.}
+\NormalTok{N <-}\StringTok{ }\KeywordTok{head}\NormalTok{(polls}\OperatorTok{$}\NormalTok{samplesize,}\DecValTok{1}\NormalTok{)}
+\NormalTok{N}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2220
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# For the first poll in `polls`, assign the estimated percentage of Clinton voters to a variable called `X_hat`. Print this value to the console.}
+\NormalTok{X_hat <-}\StringTok{ }\NormalTok{(}\KeywordTok{head}\NormalTok{(polls}\OperatorTok{$}\NormalTok{rawpoll_clinton,}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\DecValTok{100}\NormalTok{)}
+\NormalTok{X_hat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.47
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Calculate the standard error of `X_hat` and save it to a variable called `se_hat`. Print this value to the console.}
+\NormalTok{se_hat <-}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(X_hat}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{X_hat)}\OperatorTok{/}\NormalTok{N)}
+\NormalTok{se_hat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.01059279
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Use `qnorm` to calculate the 95% confidence interval for the proportion of Clinton voters. Save the lower and then the upper confidence interval to a variable called `ci`.}
+\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.959964
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ci <-}\StringTok{ }\KeywordTok{c}\NormalTok{(X_hat }\OperatorTok{-}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat, X_hat }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Pollster results for
+p}}{Pollster results for p}}\label{pollster-results-for-p}
+
+Create a new object called \texttt{pollster\_results} that contains the
+pollster's name, the end date of the poll, the proportion of voters who
+declared a vote for Clinton, the standard error of this estimate, and
+the lower and upper bounds of the confidence interval for the estimate.
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{mutate} function to define four new columns:
+  \texttt{X\_hat,\ se\_hat,\ lower}, and \texttt{upper}. Temporarily add
+  these columns to the \texttt{polls} object that has already been
+  loaded for you.
+\item
+  In the \texttt{X\_hat}column, convert the raw poll results for Clinton
+  to a proportion.
+\item
+  In the \texttt{se\_hat} column, calculate the standard error of
+  \texttt{X\_hat} for each poll using the \texttt{sqrt} function.
+\item
+  In the \texttt{lower} column, calculate the lower bound of the 95\%
+  confidence interval using the \texttt{qnorm} function.
+\item
+  In the \texttt{upper} column, calculate the upper bound of the 95\%
+  confidence interval using the \texttt{qnorm} function.
+\item
+  Use the \texttt{select} function to select the columns from
+  \texttt{polls} to save to the new object \texttt{pollster\_results}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The `polls` object that filtered all the data by date and nation has already been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(polls)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   state  startdate    enddate
+## 1  U.S. 2016-11-03 2016-11-06
+## 2  U.S. 2016-11-01 2016-11-07
+## 3  U.S. 2016-11-02 2016-11-06
+## 4  U.S. 2016-11-04 2016-11-07
+## 5  U.S. 2016-11-03 2016-11-06
+## 6  U.S. 2016-11-03 2016-11-06
+##                                                     pollster grade
+## 1                                   ABC News/Washington Post    A+
+## 2                                    Google Consumer Surveys     B
+## 3                                                      Ipsos    A-
+## 4                                                     YouGov     B
+## 5                                           Gravis Marketing    B-
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research     A
+##   samplesize population rawpoll_clinton rawpoll_trump rawpoll_johnson
+## 1       2220         lv           47.00         43.00            4.00
+## 2      26574         lv           38.03         35.69            5.46
+## 3       2195         lv           42.00         39.00            6.00
+## 4       3677         lv           45.00         41.00            5.00
+## 5      16639         rv           47.00         43.00            3.00
+## 6       1295         lv           48.00         44.00            3.00
+##   rawpoll_mcmullin adjpoll_clinton adjpoll_trump adjpoll_johnson
+## 1               NA        45.20163      41.72430        4.626221
+## 2               NA        43.34557      41.21439        5.175792
+## 3               NA        42.02638      38.81620        6.844734
+## 4               NA        45.65676      40.92004        6.069454
+## 5               NA        46.84089      42.33184        3.726098
+## 6               NA        49.02208      43.95631        3.057876
+##   adjpoll_mcmullin
+## 1               NA
+## 2               NA
+## 3               NA
+## 4               NA
+## 5               NA
+## 6               NA
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Create a new object called `pollster_results` that contains columns for pollster name, end date, X_hat, lower confidence interval, and upper confidence interval for each poll.}
+\NormalTok{polls <-}\StringTok{ }\KeywordTok{mutate}\NormalTok{(polls, }\DataTypeTok{X_hat =}\NormalTok{ polls}\OperatorTok{$}\NormalTok{rawpoll_clinton}\OperatorTok{/}\DecValTok{100}\NormalTok{, }\DataTypeTok{se_hat =} \KeywordTok{sqrt}\NormalTok{(X_hat}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{X_hat)}\OperatorTok{/}\NormalTok{polls}\OperatorTok{$}\NormalTok{samplesize), }\DataTypeTok{lower =}\NormalTok{ X_hat }\OperatorTok{-}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat, }\DataTypeTok{upper =}\NormalTok{ X_hat }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat)}
+\NormalTok{pollster_results <-}\StringTok{ }\KeywordTok{select}\NormalTok{(polls, pollster, enddate, X_hat, se_hat, lower, upper)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Comparing to actual results -
+p}}{Comparing to actual results - p}}\label{comparing-to-actual-results---p}
+
+The final tally for the popular vote was Clinton 48.2\% and Trump
+46.1\%. Add a column called \texttt{hit} to \texttt{pollster\_results}
+that states if the confidence interval included the true proportion
+p=0.482 or not. What proportion of confidence intervals included p?
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{mutate} function to define a new variable called
+  `hit'.
+\item
+  Use logical expressions to determine if each values in \texttt{lower}
+  and \texttt{upper} span the actual proportion.
+\item
+  Use the \texttt{mean} function to determine the average value in
+  \texttt{hit} and \texttt{summarize} the results using summarize.
+\item
+  Save the result as an object called \texttt{avg\_hit}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The `pollster_results` object has already been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(pollster_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                     pollster    enddate
+## 1                                   ABC News/Washington Post 2016-11-06
+## 2                                    Google Consumer Surveys 2016-11-07
+## 3                                                      Ipsos 2016-11-06
+## 4                                                     YouGov 2016-11-07
+## 5                                           Gravis Marketing 2016-11-06
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research 2016-11-06
+##    X_hat      se_hat     lower     upper
+## 1 0.4700 0.010592790 0.4492385 0.4907615
+## 2 0.3803 0.002978005 0.3744632 0.3861368
+## 3 0.4200 0.010534681 0.3993524 0.4406476
+## 4 0.4500 0.008204286 0.4339199 0.4660801
+## 5 0.4700 0.003869218 0.4624165 0.4775835
+## 6 0.4800 0.013883131 0.4527896 0.5072104
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Add a logical variable called `hit` that indicates whether the actual value exists within the confidence interval of each poll. Summarize the average `hit` result to determine the proportion of polls with confidence intervals include the actual value. Save the result as an object called `avg_hit`.}
+\NormalTok{avg_hit <-}\StringTok{ }\NormalTok{pollster_results }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{hit=}\NormalTok{(lower}\OperatorTok{<}\FloatTok{0.482} \OperatorTok{&}\StringTok{ }\NormalTok{upper}\OperatorTok{>}\FloatTok{0.482}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarize}\NormalTok{(}\KeywordTok{mean}\NormalTok{(hit))}
+\NormalTok{avg_hit}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   mean(hit)
+## 1 0.3142857
+\end{verbatim}
+
+\subsection{\texorpdfstring{\textbf{Theory of confidence
+intervals}}{Theory of confidence intervals}}\label{theory-of-confidence-intervals}
+
+If these confidence intervals are constructed correctly, and the theory
+holds up, what proportion of confidence intervals should include p?
+
+Possible Answers
+
+\begin{itemize}
+\tightlist
+\item
+  0.05
+\item
+  0.31
+\item
+  0.50
+\item
+  0.95 {[}X{]}
+\end{itemize}
+
+\subsection{\texorpdfstring{\textbf{Confidence interval for
+d}}{Confidence interval for d}}\label{confidence-interval-for-d}
+
+A much smaller proportion of the polls than expected produce confidence
+intervals containing p.~Notice that most polls that fail to include p
+are underestimating. The rationale for this is that undecided voters
+historically divide evenly between the two main candidates on election
+day.
+
+In this case, it is more informative to estimate the spread or the
+difference between the proportion of two candidates d, or
+0.482−0.461=0.021 for this election.
+
+Assume that there are only two parties and that \(\ d=2p−1\). Construct
+a 95\% confidence interval for difference in proportions on election
+night.
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{mutate} function to define a new variable called
+  `d\_hat' in \texttt{polls}. The new variable subtract the proportion
+  of Trump voters from the proportion of Clinton voters.
+\item
+  Extract the sample size \texttt{N} from the first poll in your subset
+  object \texttt{polls}.
+\item
+  Extract the difference in proportions of voters \texttt{d\_hat} from
+  the first poll in your subset object polls.
+\item
+  Use the formula above to calculate p from \texttt{d\_hat}. Assign p to
+  the variable \texttt{X\_hat}.
+\item
+  Find the standard error of the spread given \texttt{N}.
+\item
+  Calculate the 95\% confidence interval of this estimate of the
+  difference in proportions, \texttt{d\_hat}, using the \texttt{qnorm}
+  function.
+\item
+  Save the lower and upper confidence intervals as an object called
+  \texttt{ci}. Save the lower confidence interval first.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Add a statement to this line of code that will add a new column named `d_hat` to `polls`. The new column should contain the difference in the proportion of voters.}
+\NormalTok{polls <-}\StringTok{ }\NormalTok{polls_us_election_}\DecValTok{2016} \OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(enddate }\OperatorTok{>=}\StringTok{ "2016-10-31"} \OperatorTok{&}\StringTok{ }\NormalTok{state }\OperatorTok{==}\StringTok{ "U.S."}\NormalTok{)  }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{d_hat =}\NormalTok{ rawpoll_clinton}\OperatorTok{/}\DecValTok{100} \OperatorTok{-}\StringTok{ }\NormalTok{rawpoll_trump}\OperatorTok{/}\DecValTok{100}\NormalTok{)}
+
+\CommentTok{# Assign the sample size of the first poll in `polls` to a variable called `N`. Print this value to the console.}
+\NormalTok{N <-}\StringTok{ }\NormalTok{polls}\OperatorTok{$}\NormalTok{samplesize[}\DecValTok{1}\NormalTok{]}
+
+\CommentTok{# For the difference `d_hat` of the first poll in `polls` to a variable called `d_hat`. Print this value to the console.}
+\NormalTok{d_hat <-}\StringTok{ }\NormalTok{polls}\OperatorTok{$}\NormalTok{d_hat[}\DecValTok{1}\NormalTok{]}
+\NormalTok{d_hat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.04
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Assign proportion of votes for Clinton to the variable `X_hat`.}
+\NormalTok{X_hat <-}\StringTok{ }\NormalTok{(d_hat}\OperatorTok{+}\DecValTok{1}\NormalTok{)}\OperatorTok{/}\DecValTok{2}
+
+\CommentTok{# Calculate the standard error of the spread and save it to a variable called `se_hat`. Print this value to the console.}
+\NormalTok{se_hat <-}\StringTok{ }\DecValTok{2}\OperatorTok{*}\KeywordTok{sqrt}\NormalTok{(X_hat}\OperatorTok{*}\NormalTok{(}\DecValTok{1}\OperatorTok{-}\NormalTok{X_hat)}\OperatorTok{/}\NormalTok{N)}
+\NormalTok{se_hat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.02120683
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Use `qnorm` to calculate the 95% confidence interval for the difference in the proportions of voters. Save the lower and then the upper confidence interval to a variable called `ci`.}
+\NormalTok{ci <-}\StringTok{ }\KeywordTok{c}\NormalTok{(d_hat }\OperatorTok{-}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat, d_hat }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\OperatorTok{*}\NormalTok{se_hat)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Pollster results for
+d}}{Pollster results for d}}\label{pollster-results-for-d}
+
+Create a new object called \texttt{pollster\_results} that contains the
+pollster's name, the end date of the poll, the difference in the
+proportion of voters who declared a vote either, the standard error of
+this estimate, and the lower and upper bounds of the confidence interval
+for the estimate.
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{mutate} function to define four new columns: `X\_hat',
+  `se\_hat', `lower', and `upper'. Temporarily add these columns to the
+  polls object that has already been loaded for you.
+\item
+  In the \texttt{X\_hat} column, calculate the proportion of voters for
+  Clinton using \texttt{d\_hat}.
+\item
+  In the \texttt{se\_hat} column, calculate the standard error of the
+  spread for each poll using the \texttt{sqrt}function.
+\item
+  In the l\texttt{ower} column, calculate the lower bound of the 95\%
+  confidence interval using the \texttt{qnorm} function.
+\item
+  In the \texttt{upper} column, calculate the upper bound of the 95\%
+  confidence interval using the \texttt{qnorm} function.
+\item
+  Use the \texttt{select} function to select the columns from
+  \texttt{polls} to save to the new object \texttt{pollster\_results}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The subset `polls` data with 'd_hat' already calculated has been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(polls)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   state  startdate    enddate
+## 1  U.S. 2016-11-03 2016-11-06
+## 2  U.S. 2016-11-01 2016-11-07
+## 3  U.S. 2016-11-02 2016-11-06
+## 4  U.S. 2016-11-04 2016-11-07
+## 5  U.S. 2016-11-03 2016-11-06
+## 6  U.S. 2016-11-03 2016-11-06
+##                                                     pollster grade
+## 1                                   ABC News/Washington Post    A+
+## 2                                    Google Consumer Surveys     B
+## 3                                                      Ipsos    A-
+## 4                                                     YouGov     B
+## 5                                           Gravis Marketing    B-
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research     A
+##   samplesize population rawpoll_clinton rawpoll_trump rawpoll_johnson
+## 1       2220         lv           47.00         43.00            4.00
+## 2      26574         lv           38.03         35.69            5.46
+## 3       2195         lv           42.00         39.00            6.00
+## 4       3677         lv           45.00         41.00            5.00
+## 5      16639         rv           47.00         43.00            3.00
+## 6       1295         lv           48.00         44.00            3.00
+##   rawpoll_mcmullin adjpoll_clinton adjpoll_trump adjpoll_johnson
+## 1               NA        45.20163      41.72430        4.626221
+## 2               NA        43.34557      41.21439        5.175792
+## 3               NA        42.02638      38.81620        6.844734
+## 4               NA        45.65676      40.92004        6.069454
+## 5               NA        46.84089      42.33184        3.726098
+## 6               NA        49.02208      43.95631        3.057876
+##   adjpoll_mcmullin  d_hat
+## 1               NA 0.0400
+## 2               NA 0.0234
+## 3               NA 0.0300
+## 4               NA 0.0400
+## 5               NA 0.0400
+## 6               NA 0.0400
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Create a new object called `pollster_results` that contains columns for pollster name, end date, d_hat, lower confidence interval of d_hat, and upper confidence interval of d_hat for each poll.}
+\NormalTok{pollster_results <-}\StringTok{ }\NormalTok{polls }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{X_hat =}\NormalTok{ (d_hat }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\DecValTok{2}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{se_hat =} \DecValTok{2} \OperatorTok{*}\StringTok{ }\KeywordTok{sqrt}\NormalTok{(X_hat }\OperatorTok{*}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{X_hat) }\OperatorTok{/}\StringTok{ }\NormalTok{samplesize)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{lower =}\NormalTok{ d_hat }\OperatorTok{-}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{se_hat) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{upper =}\NormalTok{ d_hat }\OperatorTok{+}\StringTok{ }\KeywordTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\OperatorTok{*}\StringTok{ }\NormalTok{se_hat) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(pollster, enddate, d_hat, lower, upper)}
+\NormalTok{pollster_results}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                      pollster    enddate
+## 1                                    ABC News/Washington Post 2016-11-06
+## 2                                     Google Consumer Surveys 2016-11-07
+## 3                                                       Ipsos 2016-11-06
+## 4                                                      YouGov 2016-11-07
+## 5                                            Gravis Marketing 2016-11-06
+## 6  Fox News/Anderson Robbins Research/Shaw & Company Research 2016-11-06
+## 7                                     CBS News/New York Times 2016-11-06
+## 8                                NBC News/Wall Street Journal 2016-11-05
+## 9                                                    IBD/TIPP 2016-11-07
+## 10                                           Selzer & Company 2016-11-06
+## 11                                          Angus Reid Global 2016-11-04
+## 12                                        Monmouth University 2016-11-06
+## 13                                             Marist College 2016-11-03
+## 14                                   The Times-Picayune/Lucid 2016-11-07
+## 15                                      USC Dornsife/LA Times 2016-11-07
+## 16                      RKM Research and Communications, Inc. 2016-11-05
+## 17                                       CVOTER International 2016-11-06
+## 18                                            Morning Consult 2016-11-05
+## 19                                               SurveyMonkey 2016-11-06
+## 20                   Rasmussen Reports/Pulse Opinion Research 2016-11-06
+## 21                                              Insights West 2016-11-07
+## 22                                 RAND (American Life Panel) 2016-11-01
+## 23 Fox News/Anderson Robbins Research/Shaw & Company Research 2016-11-03
+## 24                                    CBS News/New York Times 2016-11-01
+## 25                                   ABC News/Washington Post 2016-11-05
+## 26                                                      Ipsos 2016-11-04
+## 27                                   ABC News/Washington Post 2016-11-04
+## 28                                                     YouGov 2016-11-06
+## 29                                                   IBD/TIPP 2016-11-06
+## 30                                   ABC News/Washington Post 2016-11-03
+## 31                                                   IBD/TIPP 2016-11-03
+## 32                                                   IBD/TIPP 2016-11-05
+## 33                                   ABC News/Washington Post 2016-11-02
+## 34                                   ABC News/Washington Post 2016-11-01
+## 35                                   ABC News/Washington Post 2016-10-31
+## 36                                                      Ipsos 2016-11-03
+## 37                                                   IBD/TIPP 2016-11-04
+## 38                                                     YouGov 2016-11-01
+## 39                                                   IBD/TIPP 2016-10-31
+## 40                                                      Ipsos 2016-11-02
+## 41                   Rasmussen Reports/Pulse Opinion Research 2016-11-03
+## 42                                   The Times-Picayune/Lucid 2016-11-06
+## 43                                                      Ipsos 2016-11-01
+## 44                                                   IBD/TIPP 2016-11-02
+## 45                                                   IBD/TIPP 2016-11-01
+## 46                   Rasmussen Reports/Pulse Opinion Research 2016-11-02
+## 47                                                      Ipsos 2016-10-31
+## 48                                   The Times-Picayune/Lucid 2016-11-05
+## 49                   Rasmussen Reports/Pulse Opinion Research 2016-10-31
+## 50                                    Google Consumer Surveys 2016-10-31
+## 51                                       CVOTER International 2016-11-05
+## 52                   Rasmussen Reports/Pulse Opinion Research 2016-11-01
+## 53                                       CVOTER International 2016-11-04
+## 54                                   The Times-Picayune/Lucid 2016-11-04
+## 55                                      USC Dornsife/LA Times 2016-11-06
+## 56                                       CVOTER International 2016-11-03
+## 57                                   The Times-Picayune/Lucid 2016-11-03
+## 58                                      USC Dornsife/LA Times 2016-11-05
+## 59                                       CVOTER International 2016-11-02
+## 60                                      USC Dornsife/LA Times 2016-11-04
+## 61                                       CVOTER International 2016-11-01
+## 62                                   The Times-Picayune/Lucid 2016-11-02
+## 63                                           Gravis Marketing 2016-10-31
+## 64                                      USC Dornsife/LA Times 2016-11-03
+## 65                                   The Times-Picayune/Lucid 2016-11-01
+## 66                                      USC Dornsife/LA Times 2016-11-02
+## 67                                           Gravis Marketing 2016-11-02
+## 68                                      USC Dornsife/LA Times 2016-11-01
+## 69                                   The Times-Picayune/Lucid 2016-10-31
+## 70                                      USC Dornsife/LA Times 2016-10-31
+##      d_hat        lower         upper
+## 1   0.0400 -0.001564627  0.0815646272
+## 2   0.0234  0.011380104  0.0354198955
+## 3   0.0300 -0.011815309  0.0718153088
+## 4   0.0400  0.007703641  0.0722963589
+## 5   0.0400  0.024817728  0.0551822719
+## 6   0.0400 -0.014420872  0.0944208716
+## 7   0.0400 -0.011860967  0.0918609675
+## 8   0.0400 -0.014696100  0.0946961005
+## 9  -0.0150 -0.073901373  0.0439013728
+## 10  0.0300 -0.039307332  0.0993073320
+## 11  0.0400 -0.017724837  0.0977248370
+## 12  0.0600 -0.011534270  0.1315342703
+## 13  0.0100 -0.053923780  0.0739237800
+## 14  0.0500  0.011013152  0.0889868476
+## 15 -0.0323 -0.068233293  0.0036332933
+## 16  0.0320 -0.029670864  0.0936708643
+## 17  0.0278 -0.020801931  0.0764019309
+## 18  0.0300 -0.020889533  0.0808895334
+## 19  0.0600  0.052615604  0.0673843956
+## 20  0.0200 -0.030595930  0.0705959303
+## 21  0.0400 -0.023875814  0.1038758144
+## 22  0.0910  0.050024415  0.1319755848
+## 23  0.0150 -0.043901373  0.0739013728
+## 24  0.0300 -0.034344689  0.0943446886
+## 25  0.0400 -0.004497495  0.0844974954
+## 26  0.0400 -0.001341759  0.0813417590
+## 27  0.0500  0.002312496  0.0976875039
+## 28  0.0390  0.032254341  0.0457456589
+## 29 -0.0240 -0.085171524  0.0371715236
+## 30  0.0400 -0.011988727  0.0919887265
+## 31  0.0050 -0.060404028  0.0704040277
+## 32 -0.0100 -0.075220256  0.0552202561
+## 33  0.0300 -0.027745070  0.0877450695
+## 34  0.0200 -0.037362198  0.0773621983
+## 35  0.0000 -0.057008466  0.0570084657
+## 36  0.0490  0.005454535  0.0925454654
+## 37  0.0050 -0.064121736  0.0741217361
+## 38  0.0300 -0.025791885  0.0857918847
+## 39  0.0090 -0.052426619  0.0704266191
+## 40  0.0820  0.037443982  0.1265560180
+## 41  0.0000 -0.050606052  0.0506060525
+## 42  0.0500  0.011491350  0.0885086495
+## 43  0.0730  0.026563876  0.1194361238
+## 44 -0.0010 -0.067563833  0.0655638334
+## 45 -0.0040 -0.070756104  0.0627561042
+## 46 -0.0300 -0.080583275  0.0205832746
+## 47  0.0680  0.016894089  0.1191059111
+## 48  0.0500  0.011051757  0.0889482429
+## 49  0.0000 -0.050606052  0.0506060525
+## 50  0.0262  0.013635277  0.0387647229
+## 51  0.0333 -0.016106137  0.0827061365
+## 52  0.0000 -0.050606052  0.0506060525
+## 53  0.0124 -0.038560140  0.0633601401
+## 54  0.0600  0.021340150  0.0986598497
+## 55 -0.0475 -0.083637121 -0.0113628793
+## 56  0.0009 -0.051576011  0.0533760106
+## 57  0.0500  0.011807815  0.0881921851
+## 58 -0.0553 -0.091100799 -0.0194992008
+## 59  0.0056 -0.048162418  0.0593624177
+## 60 -0.0540 -0.089809343 -0.0181906570
+## 61  0.0067 -0.046002019  0.0594020190
+## 62  0.0500  0.011756829  0.0882431712
+## 63  0.0100 -0.016769729  0.0367697294
+## 64 -0.0351 -0.071090499  0.0008904993
+## 65  0.0300 -0.008295761  0.0682957614
+## 66 -0.0503 -0.086413709 -0.0141862908
+## 67  0.0200 -0.019711083  0.0597110831
+## 68 -0.0547 -0.090406512 -0.0189934879
+## 69  0.0200 -0.018430368  0.0584303678
+## 70 -0.0362 -0.071126335 -0.0012736645
+\end{verbatim}
+
+\subsection{\texorpdfstring{\textbf{Comparing to actual results -
+d}}{Comparing to actual results - d}}\label{comparing-to-actual-results---d}
+
+What proportion of confidence intervals for the difference between the
+proportion of voters included d, the actual difference in election day?
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{mutate} function to define a new variable
+  within\texttt{pollster\_results} called hit.
+\item
+  Use logical expressions to determine if each values in \texttt{lower}
+  and \texttt{upper} span the actual difference in proportions of
+  voters.
+\item
+  Use the \texttt{mean} function to determine the average value in
+  \texttt{hit} and summarize the results using \texttt{summarize}.
+\item
+  Save the result as an object called \texttt{avg\_hit}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The `pollster_results` object has already been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(pollster_results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                                     pollster    enddate
+## 1                                   ABC News/Washington Post 2016-11-06
+## 2                                    Google Consumer Surveys 2016-11-07
+## 3                                                      Ipsos 2016-11-06
+## 4                                                     YouGov 2016-11-07
+## 5                                           Gravis Marketing 2016-11-06
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research 2016-11-06
+##    d_hat        lower      upper
+## 1 0.0400 -0.001564627 0.08156463
+## 2 0.0234  0.011380104 0.03541990
+## 3 0.0300 -0.011815309 0.07181531
+## 4 0.0400  0.007703641 0.07229636
+## 5 0.0400  0.024817728 0.05518227
+## 6 0.0400 -0.014420872 0.09442087
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Add a logical variable called `hit` that indicates whether the actual value (0.021) exists within the confidence interval of each poll. Summarize the average `hit` result to determine the proportion of polls with confidence intervals include the actual value. Save the result as an object called `avg_hit`.}
+\NormalTok{avg_hit <-}\StringTok{ }\NormalTok{pollster_results }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{hit=}\NormalTok{lower }\OperatorTok{<=}\StringTok{ }\FloatTok{0.021} \OperatorTok{&}\StringTok{ }\NormalTok{upper }\OperatorTok{>=}\StringTok{ }\FloatTok{0.021}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarize}\NormalTok{(}\KeywordTok{mean}\NormalTok{(hit))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{\textbf{Comparing to actual results by
+pollster}}{Comparing to actual results by pollster}}\label{comparing-to-actual-results-by-pollster}
+
+Although the proportion of confidence intervals that include the actual
+difference between the proportion of voters increases substantially, it
+is still lower that 0.95. In the next chapter, we learn the reason for
+this.
+
+To motivate our next exercises, calculate the difference between each
+poll's estimate d¯ and the actual d=0.021. Stratify this difference, or
+error, by pollster in a plot.
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Define a new variable \texttt{errors} that contains the difference
+  between the estimated difference between the proportion of voters and
+  the actual difference on election day, 0.021.
+\item
+  To create the plot of errors by pollster, add a layer with the
+  function \texttt{geom\_point}. The aesthetic mappings require a
+  definition of the x-axis and y-axis variables. So the code looks like
+  the example below, but you fill in the variables for x and y.
+\item
+  The last line of the example code adjusts the x-axis labels so that
+  they are easier to read.
+\end{itemize}
+
+\begin{verbatim}
+data %>% ggplot(aes(x = , y = )) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The `polls` object has already been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(polls)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   state  startdate    enddate
+## 1  U.S. 2016-11-03 2016-11-06
+## 2  U.S. 2016-11-01 2016-11-07
+## 3  U.S. 2016-11-02 2016-11-06
+## 4  U.S. 2016-11-04 2016-11-07
+## 5  U.S. 2016-11-03 2016-11-06
+## 6  U.S. 2016-11-03 2016-11-06
+##                                                     pollster grade
+## 1                                   ABC News/Washington Post    A+
+## 2                                    Google Consumer Surveys     B
+## 3                                                      Ipsos    A-
+## 4                                                     YouGov     B
+## 5                                           Gravis Marketing    B-
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research     A
+##   samplesize population rawpoll_clinton rawpoll_trump rawpoll_johnson
+## 1       2220         lv           47.00         43.00            4.00
+## 2      26574         lv           38.03         35.69            5.46
+## 3       2195         lv           42.00         39.00            6.00
+## 4       3677         lv           45.00         41.00            5.00
+## 5      16639         rv           47.00         43.00            3.00
+## 6       1295         lv           48.00         44.00            3.00
+##   rawpoll_mcmullin adjpoll_clinton adjpoll_trump adjpoll_johnson
+## 1               NA        45.20163      41.72430        4.626221
+## 2               NA        43.34557      41.21439        5.175792
+## 3               NA        42.02638      38.81620        6.844734
+## 4               NA        45.65676      40.92004        6.069454
+## 5               NA        46.84089      42.33184        3.726098
+## 6               NA        49.02208      43.95631        3.057876
+##   adjpoll_mcmullin  d_hat
+## 1               NA 0.0400
+## 2               NA 0.0234
+## 3               NA 0.0300
+## 4               NA 0.0400
+## 5               NA 0.0400
+## 6               NA 0.0400
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Add variable called `error` to the object `polls` that contains the difference between d_hat and the actual difference on election day. Then make a plot of the error stratified by pollster.}
+\NormalTok{polls }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{error =}\NormalTok{ d_hat }\OperatorTok{-}\StringTok{ }\FloatTok{0.021}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ pollster, }\DataTypeTok{y =}\NormalTok{ error)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{90}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{03_-_Confidence_Intervals_and_P-Values_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\subsection{\texorpdfstring{\textbf{Comparing to actual results by
+pollster - multiple
+polls}}{Comparing to actual results by pollster - multiple polls}}\label{comparing-to-actual-results-by-pollster---multiple-polls}
+
+Remake the plot you made for the previous exercise, but only for
+pollsters that took five or more polls.
+
+You can use dplyr tools \texttt{group\_by} and \texttt{n} to group data
+by a variable of interest and then count the number of observations in
+the groups. The function \texttt{filter} filters data piped into it by
+your specified condition.
+
+For example:
+
+\begin{verbatim}
+data %>% group_by(variable_for_grouping) 
+    %>% filter(n() >= 5)
+\end{verbatim}
+
+Instructions
+
+\begin{itemize}
+\tightlist
+\item
+  Define a new variable \texttt{errors} that contains the difference
+  between the estimated difference between the proportion of voters and
+  the actual difference on election day, 0.021.
+\item
+  Group the data by pollster using the \texttt{group\_by} function.
+\item
+  Filter the data by pollsters with 5 or more polls.
+\item
+  Use \texttt{ggplo}t to create the plot of errors by pollster.
+\item
+  Add a layer with the function \texttt{geom\_point}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# The `polls` object has already been loaded. Examine it using the `head` function.}
+\KeywordTok{head}\NormalTok{(polls)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   state  startdate    enddate
+## 1  U.S. 2016-11-03 2016-11-06
+## 2  U.S. 2016-11-01 2016-11-07
+## 3  U.S. 2016-11-02 2016-11-06
+## 4  U.S. 2016-11-04 2016-11-07
+## 5  U.S. 2016-11-03 2016-11-06
+## 6  U.S. 2016-11-03 2016-11-06
+##                                                     pollster grade
+## 1                                   ABC News/Washington Post    A+
+## 2                                    Google Consumer Surveys     B
+## 3                                                      Ipsos    A-
+## 4                                                     YouGov     B
+## 5                                           Gravis Marketing    B-
+## 6 Fox News/Anderson Robbins Research/Shaw & Company Research     A
+##   samplesize population rawpoll_clinton rawpoll_trump rawpoll_johnson
+## 1       2220         lv           47.00         43.00            4.00
+## 2      26574         lv           38.03         35.69            5.46
+## 3       2195         lv           42.00         39.00            6.00
+## 4       3677         lv           45.00         41.00            5.00
+## 5      16639         rv           47.00         43.00            3.00
+## 6       1295         lv           48.00         44.00            3.00
+##   rawpoll_mcmullin adjpoll_clinton adjpoll_trump adjpoll_johnson
+## 1               NA        45.20163      41.72430        4.626221
+## 2               NA        43.34557      41.21439        5.175792
+## 3               NA        42.02638      38.81620        6.844734
+## 4               NA        45.65676      40.92004        6.069454
+## 5               NA        46.84089      42.33184        3.726098
+## 6               NA        49.02208      43.95631        3.057876
+##   adjpoll_mcmullin  d_hat
+## 1               NA 0.0400
+## 2               NA 0.0234
+## 3               NA 0.0300
+## 4               NA 0.0400
+## 5               NA 0.0400
+## 6               NA 0.0400
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Add variable called `error` to the object `polls` that contains the difference between d_hat and the actual difference on election day. Then make a plot of the error stratified by pollster, but only for pollsters who took 5 or more polls.}
+\NormalTok{polls }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{error =}\NormalTok{ d_hat }\OperatorTok{-}\StringTok{ }\FloatTok{0.021}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(pollster) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(}\KeywordTok{n}\NormalTok{() }\OperatorTok{>=}\StringTok{ }\DecValTok{5}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ pollster, }\DataTypeTok{y =}\NormalTok{ error)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{90}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{03_-_Confidence_Intervals_and_P-Values_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+
+\end{document}

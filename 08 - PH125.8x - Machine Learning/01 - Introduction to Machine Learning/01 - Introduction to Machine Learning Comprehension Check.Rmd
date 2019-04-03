@@ -2,8 +2,8 @@
 title: "01 - Introduction to Machine Learning Comprehension Check"
 author: "Gabriele Mineo - Harvard Data Science Professional"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

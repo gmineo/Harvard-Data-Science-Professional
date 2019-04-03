@@ -2,8 +2,8 @@
 title: "04 - Dates, Times and Text Mining Comprehension Check"
 author: "Gabriele Mineo - Harvard Data Science Professional"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
